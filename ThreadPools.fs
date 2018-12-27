@@ -1,4 +1,4 @@
-module Threads
+module ThreadPools
 
 open System.Threading
 open System.IO
@@ -14,12 +14,15 @@ let executeExample filesCount =
   watch1.Start()
   for i in [1..filesCount] do writeFile i ()
   watch1.Stop()
-  printfn "Write files task, synchronous\t%A" watch1.Elapsed
+  printfn "Write files task, synchronous\t\t\t%A" watch1.Elapsed
 
   let watch2 = Stopwatch()
   watch2.Start()
-  let threads = List.init filesCount (fun i -> new Thread(writeFile i))
-  for thread in threads do thread.Start()
+  use countdownEvent = new CountdownEvent(filesCount)
+  for i in [1..filesCount] do 
+    ThreadPool.QueueUserWorkItem(
+      new WaitCallback(fun _ -> writeFile i (); countdownEvent.Signal() |> ignore)
+    ) |> ignore
+  countdownEvent.Wait()
   watch2.Stop()
-  for thread in threads do thread.Join()
-  printfn "Write files task, threads:\t%A" watch2.Elapsed
+  printfn "Write files task, thread from threadpool:\t%A" watch2.Elapsed

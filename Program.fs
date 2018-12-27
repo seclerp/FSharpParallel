@@ -1,7 +1,4 @@
-﻿open System
-
-[<EntryPoint>]
+﻿[<EntryPoint>]
 let main argv =
-    printfn "Hello World from F#!"
-    Threads.executeExample()
-    0
+  Tasks.executeExample "7751e64db1ace366d92d3ca6d7b0e1ed"
+  0
