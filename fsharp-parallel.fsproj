@@ -8,6 +8,7 @@
     <Compile Include="Threads.fs" />
     <Compile Include="ThreadPools.fs" />
     <Compile Include="Tasks.fs" />
+    <Compile Include="Async.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

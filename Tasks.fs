@@ -4,10 +4,6 @@ open System.IO
 open System.Net
 open Newtonsoft.Json
 open System.Diagnostics
-open System.Threading.Tasks
-open System
-open System.Collections.Concurrent
-open System.Threading.Tasks
 open FSharp.Collections.ParallelSeq
 
 let request (url:string) =
@@ -37,7 +33,8 @@ and Weather = {
 }
 
 let getCities apiKey =
-  request <| sprintf "https://api.openweathermap.org/data/2.5/find?lat=49&lon=32&cnt=50&appid=%s" apiKey   // 49, 32 - coordinates of arbitary center of Ukraine
+  // 49, 32 - coordinates of geographic center of Ukraine
+  request <| sprintf "https://api.openweathermap.org/data/2.5/find?lat=49&lon=32&cnt=50&appid=%s" apiKey   
   |> JsonConvert.DeserializeObject<CitiesResponse>
 
 let getInfo apiKey id  =
@@ -53,7 +50,7 @@ let getAverageInfo apiKey citiesResponse  =
 let getAverageInfoArrayParallel apiKey citiesResponse =
   let weatherTasks = citiesResponse.list |> Array.Parallel.map (fun city -> getInfo apiKey (city.id))
   let averageTemp = weatherTasks |> Array.averageBy (fun weather -> weather.main.temp)
-  let averagePressure = weatherTasks |> Seq.averageBy (fun weather -> weather.main.pressure)
+  let averagePressure = weatherTasks |> Array.averageBy (fun weather -> weather.main.pressure)
   { temp = averageTemp; pressure = averagePressure }
 
 let getAverageInfoPSeq apiKey citiesResponse =
