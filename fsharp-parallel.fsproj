@@ -9,6 +9,7 @@
     <Compile Include="ThreadPools.fs" />
     <Compile Include="Tasks.fs" />
     <Compile Include="Async.fs" />
+    <Compile Include="Syntax.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
